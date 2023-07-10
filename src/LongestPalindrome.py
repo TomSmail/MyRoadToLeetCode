@@ -1,33 +1,40 @@
 class Solution:
-    def longestPalindrome(self, s: str) -> str:
-        letter_lists = {}
-        # initilaise letter-index dict
-        longest_start = 0
-        longest_end = 0
+    def longestPalindromHelper2(self, s: str, index: int, offset: int) -> str: 
+        if (offset != 0):
+            palindrome = s[index] + s[index]
+        else:
+            palindrome = s[index]
         for i in range(len(s)):
-            if s[i] in letter_lists:
-                index_list = letter_lists[s[i]]
-                index_list.append(i)
-                letter_lists[s[i]] = index_list
+            left = (index - (i + 1)) 
+            right = (index + (i + 1) + offset)
+            print(left, right)
+            if( left < 0) or (right > len(s) - 1):
+                return palindrome
+            elif s[left] == s[right]:
+                palindrome = palindrome + s[left]
+                palindrome = s[right] + palindrome
             else:
-                letter_lists[s[i]] = [i]
-        for j in range(len(s)):
-            start = j
-            for k in range(len(letter_lists[s[j]])):
-                end = letter_lists[s[j]][k]
-                og_end = end
-                og_start = start
-                pal = False
-                while(end > start):
-                    if s[end] != s[start]:
-                        pal = False
-                        break
-                    else:
-                        pal = True
-                        end -= 1
-                        start += 1
-                if pal:
-                    if (longest_end - longest_start) < (og_end - og_start):
-                        longest_end = og_end
-                        longest_start = og_start
-        return s[longest_start: longest_end + 1]
+                return palindrome
+        return palindrome
+
+    def longestPalindromeHelper(self, s: str, index: int) -> str:
+        palindrome = self.longestPalindromHelper2(s, index, 0)
+        palindrome2 = ""
+        if index < (len(s) - 1):
+            if s[index + 1] == palindrome:
+                palindrome2 = self.longestPalindromHelper2(s, index, 1)
+        if len(palindrome) > len(palindrome2):
+            return palindrome
+        else:
+            return palindrome2
+
+    def longestPalindrome(self, s: str) -> str:
+        largest_len = 0
+        largest = ""
+        for i in range(len(s)):
+            palindrome = self.longestPalindromeHelper(s, i)
+            if len(palindrome) > largest_len:
+                largest_len = len(palindrome)
+                largest = palindrome
+        return largest
+
