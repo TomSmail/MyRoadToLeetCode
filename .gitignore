@@ -29,3 +29,6 @@ bin/
 .DS_Store
 
 .idea
+
+### C files ###
+*.o
